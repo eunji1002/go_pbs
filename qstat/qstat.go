@@ -908,12 +908,11 @@ func (qs *Qstat) PbsJobsState() error {
 	return nil
 }
 
-//获取信息
+//여길 바꾸면 될 거 같은데..
 func get_pbs_batch_status(batch_status *C.struct_batch_status) (batch []utils.BatchStatus) {
-
-	for batch_status != nil {
+	for bs := batch_status; bs != nil; bs = bs.next {
 		temp := []utils.Attrib{}
-		for attr := batch_status.attribs; attr != nil; attr = attr.next {
+		for attr := bs.attribs; attr != nil; attr = attr.next {
 			temp = append(temp, utils.Attrib{
 				Name:     C.GoString(attr.name),
 				Resource: C.GoString(attr.resource),
@@ -922,12 +921,11 @@ func get_pbs_batch_status(batch_status *C.struct_batch_status) (batch []utils.Ba
 		}
 
 		batch = append(batch, utils.BatchStatus{
-			Name:       C.GoString(batch_status.name),
-			Text:       C.GoString(batch_status.text),
+			Name:       C.GoString(bs.name),
+			Text:       C.GoString(bs.text),
 			Attributes: temp,
 		})
-
-		batch_status = batch_status.next
 	}
 	return batch
 }
+
