@@ -15,7 +15,6 @@ import (
 	"unsafe"
 
 	"github.com/juju/errors"
-	"github.com/jbarber/pbs"
 	"github.com/cherrysx/go_pbspro/utils"
 )
 
