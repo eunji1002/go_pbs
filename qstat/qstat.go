@@ -312,7 +312,7 @@ func (qs *Qstat) PbsNodeState() error {
 	e := C.CString(qs.Extend)
 	defer C.free(unsafe.Pointer(e))
 
-	batch_status := utils.pbs_statnode(C.int(qs.Handle), i, a, e)
+	batch_status := C.pbs_statnode(C.int(qs.Handle), i, a, e)
 
 	if batch_status == nil {
 		return errors.New(utils.Pbs_strerror(int(C.pbs_errno)))
