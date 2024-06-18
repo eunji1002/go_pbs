@@ -259,17 +259,19 @@ func Pbs_attrib2attribl(attribs []utils.Attrib) *C.struct_attrl {
 	}
 	tail := first
 
-	for _, attr := range attribs[1:len(attribs)] {
+	for i := 1; i < len(attribs); i++ {
 		tail.next = &C.struct_attrl{
-			value:    C.CString(attr.Value),
-			resource: C.CString(attr.Resource),
-			name:     C.CString(attr.Name),
-			op:       uint32(attribs[0].Op),
+			value:    C.CString(attribs[i].Value),
+			resource: C.CString(attribs[i].Resource),
+			name:     C.CString(attribs[i].Name),
+			op:       uint32(attribs[i].Op),
 		}
+		tail = tail.next // tail을 새로 추가된 노드로 업데이트
 	}
 
 	return first
 }
+
 
 func Pbs_freeattribl(attrl *C.struct_attrl) {
 	for p := attrl; p != nil; p = p.next {
