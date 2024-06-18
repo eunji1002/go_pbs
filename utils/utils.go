@@ -147,7 +147,7 @@ type (
 	Attrib struct {
 		Name     string
 		Resource string
-		Value    string
+		Value    [5]string
 		Op       Operator
 	}
 
