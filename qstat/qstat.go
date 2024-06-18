@@ -925,6 +925,8 @@ func (qs *Qstat) PbsJobsState() error {
 
 //여길 바꾸면 될 거 같은데..
 func get_pbs_batch_status(batch_status *C.struct_batch_status) (batch []utils.BatchStatus) {
+	logrus.Info("Starting get_pbs_batch_status function")
+	
 	for bs := batch_status; bs != nil; bs = bs.next {
 		temp := []utils.Attrib{}
 		for attr := bs.attribs; attr != nil; attr = attr.next {
@@ -940,13 +942,7 @@ func get_pbs_batch_status(batch_status *C.struct_batch_status) (batch []utils.Ba
 			Text:       C.GoString(bs.text),
 			Attributes: temp,
 		})
-	}
-	// 디버깅: 가져온 batch 정보를 출력
-	for _, b := range batch {
-		fmt.Printf("Node Name: %s\n", b.Name)
-		for _, attr := range b.Attributes {
-			logrus.Infof("  Attribute Name: %s, Resource: %s, Value: %s\n", attr.Name, attr.Resource, attr.Value)
-		}
+		logrus.Infof("Batch status for node: %s with attributes count: %d", C.GoString(bs.name), len(temp))
 	}
 	return batch
 }
