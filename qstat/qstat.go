@@ -15,7 +15,7 @@ import (
 	"unsafe"
 
 	"github.com/juju/errors"
-
+	"github.com/jbarber/pbs"
 	"github.com/cherrysx/go_pbspro/utils"
 )
 
@@ -506,7 +506,7 @@ func (qs *Qstat) PbsQueueState() error {
 				if strings.Compare(attr.Value, "True") == 0 {
 					tmpServerQueueState.Started = 1
 				} else {
-					tmpServerQueueState.Started = 0
+					tmpServerQueueState.Started = 0fno
 				}
 			default:
 				fmt.Println("other queue state", attr.Name)
