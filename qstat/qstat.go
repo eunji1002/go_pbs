@@ -246,31 +246,47 @@ func (qs *Qstat) DisconnectPBS() error {
 }
 
 func Pbs_attrib2attribl(attribs []utils.Attrib) *C.struct_attrl {
-	// Empty array returns null pointer
-	if len(attribs) == 0 {
-		return nil
-	}
+    // Empty array returns null pointer
+    if len(attribs) == 0 {
+        return nil
+    }
 
-	first := &C.struct_attrl{
-		value:    C.CString(attribs[0].Value),
-		resource: C.CString(attribs[0].Resource),
-		name:     C.CString(attribs[0].Name),
-		op:       uint32(attribs[0].Op),
-	}
-	tail := first
+    // 초기화
+    var first, tail *C.struct_attrl
 
-	for i := 1; i < len(attribs); i++ {
-		tail.next = &C.struct_attrl{
-			value:    C.CString(attribs[i].Value),
-			resource: C.CString(attribs[i].Resource),
-			name:     C.CString(attribs[i].Name),
-			op:       uint32(attribs[i].Op),
-		}
-		tail = tail.next // tail을 새로 추가된 노드로 업데이트
-	}
+    for i, attr := range attribs {
+        newNode := &C.struct_attrl{
+            value:    C.CString(attr.Value),
+            resource: C.CString(attr.Resource),
+            name:     C.CString(attr.Name),
+            op:       uint32(attr.Op),
+        }
 
-	return first
+        // 첫 번째 노드일 경우
+        if i == 0 {
+            first = newNode
+            tail = newNode
+        } else {
+            tail.next = newNode
+            tail = newNode // tail을 새로 추가된 노드로 업데이트
+        }
+    }
+
+    // 연결 리스트의 모든 노드를 출력
+    current := first
+    for current != nil {
+        fmt.Printf("Value: %s, Resource: %s, Name: %s, Op: %d\n",
+            C.GoString(current.value),
+            C.GoString(current.resource),
+            C.GoString(current.name),
+            current.op,
+        )
+        current = current.next
+    }
+
+    return first // 모든 노드를 포함한 연결 리스트의 첫 번째 노드를 반환
 }
+
 
 
 func Pbs_freeattribl(attrl *C.struct_attrl) {
