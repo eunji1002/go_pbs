@@ -82,7 +82,7 @@ type (
 
 	//qstat gather node information.
 	QstatNodeInfo struct {
-		NodeName                           []string `json:"node_name" db:"node_name"`
+		NodeName                           string `json:"node_name" db:"node_name"`
 		Mom                                string `json:"mom" db:"mom"`
 		Ntype                              string `json:"ntype" db:"ntype"`
 		State                              string `json:'state" db:"state"`
