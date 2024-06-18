@@ -326,6 +326,9 @@ func (qs *Qstat) PbsNodeState() error {
 
 	batch := get_pbs_batch_status(batch_status)
 
+	// 디버깅: 가져온 batch 정보를 출력
+	fmt.Println("Batch status count:", len(batch))
+	
 	for _, bs := range batch {
 		var tmpServerNodeState QstatNodeInfo
 		tmpServerNodeState.NodeName = bs.Name
@@ -928,6 +931,13 @@ func get_pbs_batch_status(batch_status *C.struct_batch_status) (batch []utils.Ba
 			Text:       C.GoString(bs.text),
 			Attributes: temp,
 		})
+	}
+	// 디버깅: 가져온 batch 정보를 출력
+	for _, b := range batch {
+		fmt.Printf("Node Name: %s\n", b.Name)
+		for _, attr := range b.Attributes {
+			fmt.Printf("  Attribute Name: %s, Resource: %s, Value: %s\n", attr.Name, attr.Resource, attr.Value)
+		}
 	}
 	return batch
 }
