@@ -246,11 +246,11 @@ func (qs *Qstat) DisconnectPBS() error {
 }
 
 func Pbs_attrib2attribl(attribs []utils.Attrib) *C.struct_attrl {
-	// Empty array returns null pointer
 	if len(attribs) == 0 {
 		return nil
 	}
 
+	// Initialize the first node
 	first := &C.struct_attrl{
 		value:    C.CString(attribs[0].Value),
 		resource: C.CString(attribs[0].Resource),
@@ -259,17 +259,20 @@ func Pbs_attrib2attribl(attribs []utils.Attrib) *C.struct_attrl {
 	}
 	tail := first
 
-	for _, attr := range attribs[1:len(attribs)] {
+	// Iterate through remaining attributes and link them
+	for _, attr := range attribs[1:] {
 		tail.next = &C.struct_attrl{
 			value:    C.CString(attr.Value),
 			resource: C.CString(attr.Resource),
 			name:     C.CString(attr.Name),
-			op:       uint32(attribs[0].Op),
+			op:       uint32(attr.Op),
 		}
+		tail = tail.next
 	}
 
 	return first
 }
+
 
 
 func Pbs_freeattribl(attrl *C.struct_attrl) {
@@ -928,4 +931,5 @@ func get_pbs_batch_status(batch_status *C.struct_batch_status) (batch []utils.Ba
 	}
 	return batch
 }
+
 
