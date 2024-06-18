@@ -244,27 +244,28 @@ func (qs *Qstat) DisconnectPBS() error {
 	}
 	return nil
 }
-
+//현재 테스트하는 부분
 func Pbs_attrib2attribl(attribs []utils.Attrib) []*C.struct_attrl {
     // Empty array returns nil pointer
     if len(attribs) == 0 {
         return nil
     }
 
-    var nodes []*C.struct_attrl
+    nodes := make([]*C.struct_attrl, len(attribs))
 
-    for _, attr := range attribs {
+    for i, attr := range attribs {
         newNode := &C.struct_attrl{
             value:    C.CString(attr.Value),
             resource: C.CString(attr.Resource),
             name:     C.CString(attr.Name),
             op:       uint32(attr.Op),
         }
-        nodes = append(nodes, newNode)
+        nodes[i] = newNode
     }
 
     return nodes
 }
+
 
 
 
