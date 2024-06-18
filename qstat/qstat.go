@@ -82,8 +82,8 @@ type (
 
 	//qstat gather node information.
 	QstatNodeInfo struct {
-		NodeName                           [5]string `json:"node_name" db:"node_name"`
-		Mom                                [5]string `json:"mom" db:"mom"`
+		NodeName                           string `json:"node_name" db:"node_name"`
+		Mom                                string `json:"mom" db:"mom"`
 		Ntype                              string `json:"ntype" db:"ntype"`
 		State                              string `json:'state" db:"state"`
 		Pcpus                              int64  `json:"pcpus" db:"pcpus"`
@@ -252,10 +252,10 @@ func Pbs_attrib2attribl(attribs []utils.Attrib) *C.struct_attrl {
 	}
 
 	first := &C.struct_attrl{
-		value:    C.CString(attribs[0].Value),
-		resource: C.CString(attribs[0].Resource),
-		name:     C.CString(attribs[0].Name),
-		op:       uint32(attribs[0].Op),
+		value:    C.CString(attribs[1].Value),
+		resource: C.CString(attribs[1].Resource),
+		name:     C.CString(attribs[1].Name),
+		op:       uint32(attribs[1].Op),
 	}
 	tail := first
 
