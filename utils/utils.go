@@ -177,6 +177,27 @@ func Pbs_connect(server string) (int, error) {
 
 	return int(handle), nil
 }
+func Pbs_statnode(handle int, id string, attribs []Attrib, extend string) ([]BatchStatus, error) {
+	i := C.CString(id)
+	defer C.free(unsafe.Pointer(i))
+
+	a := attrib2attribl(attribs)
+	defer freeattribl(a)
+
+	e := C.CString(extend)
+	defer C.free(unsafe.Pointer(e))
+
+	batch_status := C.pbs_statnode(C.int(handle), i, a, e)
+
+	if batch_status == nil {
+		return nil, errors.New(Pbs_strerror(int(C.pbs_errno)))
+	}
+	defer C.pbs_statfree(batch_status)
+
+	batch := get_pbs_batch_status(batch_status)
+
+	return batch, nil
+}
 
 func Pbs_disconnect(handle int) error {
 	ret := C.pbs_disconnect(C.int(handle))
