@@ -247,6 +247,7 @@ func (qs *Qstat) DisconnectPBS() error {
 
 func Pbs_attrib2attribl(attribs []utils.Attrib) *C.struct_attrl {
 	if len(attribs) == 0 {
+		logrus.Warn("No attributes found")
 		return nil
 	}
 
@@ -308,6 +309,8 @@ func (qs *Qstat) Pbs_statjob() ([]utils.BatchStatus, error) {
 
 // 여기서 문제임
 func (qs *Qstat) PbsNodeState() error {
+	logrus.Info("Starting PbsNodeState function")
+	
 	i := C.CString(qs.ID)
 	defer C.free(unsafe.Pointer(i))
 
@@ -320,10 +323,13 @@ func (qs *Qstat) PbsNodeState() error {
 	batch_status := C.pbs_statnode(C.int(qs.Handle), i, a, e)
 
 	if batch_status == nil {
+		logrus.Error("Failed to get batch status")
 		return errors.New(utils.Pbs_strerror(int(C.pbs_errno)))
 	}
 	defer C.pbs_statfree(batch_status)
 
+	logrus.Info("Successfully retrieved batch status")
+	
 	batch := get_pbs_batch_status(batch_status)
 
 	// 디버깅: 가져온 batch 정보를 출력
@@ -348,6 +354,7 @@ func (qs *Qstat) PbsNodeState() error {
 				if len(attr.Resource) == 0 {
 					break
 				}
+				logrus.Infof("Resource available for Node %s: %s = %s", bs.Name, attr.Resource, attr.Value)
 				switch attr.Resource {
 				case "arch":
 					tmpServerNodeState.ResourcesAvailableArch = attr.Value
@@ -435,6 +442,8 @@ func (qs *Qstat) PbsNodeState() error {
 			}
 		}
 		qs.NodeState = append(qs.NodeState, tmpServerNodeState)
+		logrus.Infof("NodeName: %s, Mom: %s, Ntype: %s, State: %s, Pcpus: %d, Jobs: %s",
+            tmpServerNodeState.NodeName, tmpServerNodeState.Mom, tmpServerNodeState.Ntype, tmpServerNodeState.State, tmpServerNodeState.Pcpus, tmpServerNodeState.Jobs)
 	}
 
 	return nil
