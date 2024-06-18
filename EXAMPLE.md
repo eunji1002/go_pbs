@@ -48,13 +48,13 @@ func main() {
 
     // See if required resources available
     {
-        avail := pbs.Avail(handle, "nodes=1")
+        avail := pbs.Avail(handle, "nodes=5")
         fmt.Printf("nodes=1: %s\n", avail)
     }
 
     // See how many nodes are present
     {
-        total, err := pbs.Totpool(handle, 1)
+        total, err := pbs.Totpool(handle, 5)
         if err != nil {
             log.Fatal(err)
         }
@@ -63,7 +63,7 @@ func main() {
 
     // See how many nodes are in use
     {
-        use, err := pbs.Usepool(handle, 1)
+        use, err := pbs.Usepool(handle, 5)
         if err != nil {
             log.Fatal(err)
         }
