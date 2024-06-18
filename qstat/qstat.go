@@ -325,7 +325,7 @@ func (qs *Qstat) PbsNodeState() error {
 
 	for _, bs := range batch {
 		var tmpServerNodeState QstatNodeInfo
-		tmpServerNodeState.NodeName = bs.Name
+		tmpServerNodeState.NodeName = node03
 		for _, attr := range bs.Attributes {
 			switch attr.Name {
 			case "Mom":
