@@ -13,7 +13,7 @@ import (
 	"strconv"
 	"strings"
 	"unsafe"
-
+	"github.com/sirupsen/logrus"
 	"github.com/juju/errors"
 
 	"github.com/cherrysx/go_pbspro/utils"
@@ -327,7 +327,7 @@ func (qs *Qstat) PbsNodeState() error {
 	batch := get_pbs_batch_status(batch_status)
 
 	// 디버깅: 가져온 batch 정보를 출력
-	fmt.Println("Batch status count:", len(batch))
+	logrus.Infof("Batch status count: %d", len(batch))
 	
 	for _, bs := range batch {
 		var tmpServerNodeState QstatNodeInfo
@@ -936,7 +936,7 @@ func get_pbs_batch_status(batch_status *C.struct_batch_status) (batch []utils.Ba
 	for _, b := range batch {
 		fmt.Printf("Node Name: %s\n", b.Name)
 		for _, attr := range b.Attributes {
-			fmt.Printf("  Attribute Name: %s, Resource: %s, Value: %s\n", attr.Name, attr.Resource, attr.Value)
+			logrus.Infof("  Attribute Name: %s, Resource: %s, Value: %s\n", attr.Name, attr.Resource, attr.Value)
 		}
 	}
 	return batch
