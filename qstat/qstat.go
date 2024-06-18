@@ -303,7 +303,7 @@ func (qs *Qstat) Pbs_statjob() ([]utils.BatchStatus, error) {
 	return batch, nil
 }
 
-//查询指定节点状态
+// 여기서 문제임
 func (qs *Qstat) PbsNodeState() error {
 	i := C.CString(qs.ID)
 	defer C.free(unsafe.Pointer(i))
@@ -325,7 +325,7 @@ func (qs *Qstat) PbsNodeState() error {
 
 	for _, bs := range batch {
 		var tmpServerNodeState QstatNodeInfo
-		tmpServerNodeState.NodeName = "node03"
+		tmpServerNodeState.NodeName = bs.Name
 		for _, attr := range bs.Attributes {
 			switch attr.Name {
 			case "Mom":
