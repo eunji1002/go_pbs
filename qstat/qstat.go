@@ -13,7 +13,7 @@ import (
 	"strconv"
 	"strings"
 	"unsafe"
-	"github.com/sirupsen/logrus"
+
 	"github.com/juju/errors"
 
 	"github.com/cherrysx/go_pbspro/utils"
@@ -246,12 +246,11 @@ func (qs *Qstat) DisconnectPBS() error {
 }
 
 func Pbs_attrib2attribl(attribs []utils.Attrib) *C.struct_attrl {
+	// Empty array returns null pointer
 	if len(attribs) == 0 {
-		logrus.Warn("No attributes found")
 		return nil
 	}
 
-	// Initialize the first node
 	first := &C.struct_attrl{
 		value:    C.CString(attribs[0].Value),
 		resource: C.CString(attribs[0].Resource),
@@ -260,21 +259,17 @@ func Pbs_attrib2attribl(attribs []utils.Attrib) *C.struct_attrl {
 	}
 	tail := first
 
-	// Iterate through remaining attributes and link them
-	for _, attr := range attribs[1:] {
+	for _, attr := range attribs[1:len(attribs)] {
 		tail.next = &C.struct_attrl{
 			value:    C.CString(attr.Value),
 			resource: C.CString(attr.Resource),
 			name:     C.CString(attr.Name),
-			op:       uint32(attr.Op),
+			op:       uint32(attribs[0].Op),
 		}
-		tail = tail.next
 	}
 
 	return first
 }
-
-
 
 func Pbs_freeattribl(attrl *C.struct_attrl) {
 	for p := attrl; p != nil; p = p.next {
@@ -307,10 +302,8 @@ func (qs *Qstat) Pbs_statjob() ([]utils.BatchStatus, error) {
 	return batch, nil
 }
 
-// 여기서 문제임
+//查询指定节点状态
 func (qs *Qstat) PbsNodeState() error {
-	logrus.Info("Starting PbsNodeState function")
-	
 	i := C.CString(qs.ID)
 	defer C.free(unsafe.Pointer(i))
 
@@ -323,18 +316,12 @@ func (qs *Qstat) PbsNodeState() error {
 	batch_status := C.pbs_statnode(C.int(qs.Handle), i, a, e)
 
 	if batch_status == nil {
-		logrus.Error("Failed to get batch status")
 		return errors.New(utils.Pbs_strerror(int(C.pbs_errno)))
 	}
 	defer C.pbs_statfree(batch_status)
 
-	logrus.Info("Successfully retrieved batch status")
-	
 	batch := get_pbs_batch_status(batch_status)
 
-	// 디버깅: 가져온 batch 정보를 출력
-	logrus.Infof("Batch status count: %d", len(batch))
-	
 	for _, bs := range batch {
 		var tmpServerNodeState QstatNodeInfo
 		tmpServerNodeState.NodeName = bs.Name
@@ -354,7 +341,6 @@ func (qs *Qstat) PbsNodeState() error {
 				if len(attr.Resource) == 0 {
 					break
 				}
-				logrus.Infof("Resource available for Node %s: %s = %s", bs.Name, attr.Resource, attr.Value)
 				switch attr.Resource {
 				case "arch":
 					tmpServerNodeState.ResourcesAvailableArch = attr.Value
@@ -442,8 +428,6 @@ func (qs *Qstat) PbsNodeState() error {
 			}
 		}
 		qs.NodeState = append(qs.NodeState, tmpServerNodeState)
-		logrus.Infof("NodeName: %s, Mom: %s, Ntype: %s, State: %s, Pcpus: %d, Jobs: %s",
-            tmpServerNodeState.NodeName, tmpServerNodeState.Mom, tmpServerNodeState.Ntype, tmpServerNodeState.State, tmpServerNodeState.Pcpus, tmpServerNodeState.Jobs)
 	}
 
 	return nil
@@ -923,13 +907,12 @@ func (qs *Qstat) PbsJobsState() error {
 	return nil
 }
 
-//여길 바꾸면 될 거 같은데..
+//获取信息
 func get_pbs_batch_status(batch_status *C.struct_batch_status) (batch []utils.BatchStatus) {
-	logrus.Info("Starting get_pbs_batch_status function")
-	
-	for bs := batch_status; bs != nil; bs = bs.next {
+
+	for batch_status != nil {
 		temp := []utils.Attrib{}
-		for attr := bs.attribs; attr != nil; attr = attr.next {
+		for attr := batch_status.attribs; attr != nil; attr = attr.next {
 			temp = append(temp, utils.Attrib{
 				Name:     C.GoString(attr.name),
 				Resource: C.GoString(attr.resource),
@@ -938,13 +921,12 @@ func get_pbs_batch_status(batch_status *C.struct_batch_status) (batch []utils.Ba
 		}
 
 		batch = append(batch, utils.BatchStatus{
-			Name:       C.GoString(bs.name),
-			Text:       C.GoString(bs.text),
+			Name:       C.GoString(batch_status.name),
+			Text:       C.GoString(batch_status.text),
 			Attributes: temp,
 		})
-		logrus.Infof("Batch status for node: %s with attributes count: %d", C.GoString(bs.name), len(temp))
+
+		batch_status = batch_status.next
 	}
 	return batch
 }
-
-
