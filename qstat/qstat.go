@@ -82,8 +82,8 @@ type (
 
 	//qstat gather node information.
 	QstatNodeInfo struct {
-		NodeName                           string `json:"node_name" db:"node_name"`
-		Mom                                string `json:"mom" db:"mom"`
+		NodeName                           []string `json:"node_name" db:"node_name"`
+		Mom                                []string `json:"mom" db:"mom"`
 		Ntype                              string `json:"ntype" db:"ntype"`
 		State                              string `json:'state" db:"state"`
 		Pcpus                              int64  `json:"pcpus" db:"pcpus"`
@@ -324,11 +324,11 @@ func (qs *Qstat) PbsNodeState() error {
 
 	for _, bs := range batch {
 		var tmpServerNodeState QstatNodeInfo
-		tmpServerNodeState.NodeName = bs.Name
+		tmpServerNodeState.NodeName = append(tmpServerNodeState.NodeName, bs.Name)
 		for _, attr := range bs.Attributes {
 			switch attr.Name {
 			case "Mom":
-				tmpServerNodeState.Mom = attr.Value
+				tmpServerNodeState.Mom = append(tmpServerNodeState.Mom, attr.Value)
 			case "ntype":
 				tmpServerNodeState.Ntype = attr.Value
 			case "state":
