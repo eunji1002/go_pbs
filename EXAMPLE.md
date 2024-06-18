@@ -49,7 +49,7 @@ func main() {
     // See if required resources available
     {
         avail := pbs.Avail(handle, "nodes=5")
-        fmt.Printf("nodes=1: %s\n", avail)
+        fmt.Printf("nodes=5: %s\n", avail)
     }
 
     // See how many nodes are present
