@@ -252,10 +252,10 @@ func Pbs_attrib2attribl(attribs []utils.Attrib) *C.struct_attrl {
 	}
 
 	first := &C.struct_attrl{
-		value:    C.CString(attribs[1].Value),
-		resource: C.CString(attribs[1].Resource),
-		name:     C.CString(attribs[1].Name),
-		op:       uint32(attribs[1].Op),
+		value:    C.CString(attribs[0].Value),
+		resource: C.CString(attribs[0].Resource),
+		name:     C.CString(attribs[0].Name),
+		op:       uint32(attribs[0].Op),
 	}
 	tail := first
 
