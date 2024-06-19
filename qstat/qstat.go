@@ -325,7 +325,7 @@ func (qs *Qstat) PbsNodeState() error {
 		var tmpServerNodeState QstatNodeInfo
 		tmpServerNodeState.NodeName = "node03"
 		for _, attr := range bs.Attributes {
-			switch attr.Name {
+			switch "node03" {
 			case "Mom":
 				tmpServerNodeState.Mom = attr.Value
 			case "ntype":
@@ -426,7 +426,7 @@ func (qs *Qstat) PbsNodeState() error {
 				fmt.Println("other node state", attr.Name)
 			}
 		}
-		qs.NodeState = append(qs.NodeState, tmpServerNodeState)
+		//qs.NodeState = append(qs.NodeState, tmpServerNodeState)
 	
 
 	return nil
