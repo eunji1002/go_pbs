@@ -15,8 +15,8 @@ import (
 	"unsafe"
 
 	"github.com/juju/errors"
-	"github.com/eunji1002/go_pbs/utils"
 
+	"github.com/eunji1002/go_pbs/utils"
 )
 
 type (
@@ -303,7 +303,7 @@ func (qs *Qstat) Pbs_statjob() ([]utils.BatchStatus, error) {
 }
 
 //查询指定节点状态
-func (qs *Qstat) PbsNodeState() ([]utils.[]BatchStatus, error) {
+func (qs *Qstat) PbsNodeState() error {
 	i := C.CString(qs.ID)
 	defer C.free(unsafe.Pointer(i))
 
@@ -313,7 +313,7 @@ func (qs *Qstat) PbsNodeState() ([]utils.[]BatchStatus, error) {
 	e := C.CString(qs.Extend)
 	defer C.free(unsafe.Pointer(e))
 
-	batch_status := C.pbsnodestate(C.int(qs.Handle), i, a, e)
+	batch_status := C.pbs_statnode(C.int(qs.Handle), i, a, e)
 
 	if batch_status == nil {
 		return errors.New(utils.Pbs_strerror(int(C.pbs_errno)))
@@ -428,14 +428,13 @@ func (qs *Qstat) PbsNodeState() ([]utils.[]BatchStatus, error) {
 			}
 		}
 		qs.NodeState = append(qs.NodeState, tmpServerNodeState)
-		fmt.Printf("Node State: %+v\n", tmpServerNodeState)
 	}
 
-	return batch, nil
+	return nil
 }
 
 //查询指定队列信息
-func (qs *Qstat) PbsQueueState() ([]utils.[]BatchStatus, error) {
+func (qs *Qstat) PbsQueueState() error {
 	i := C.CString(qs.ID)
 	defer C.free(unsafe.Pointer(i))
 
@@ -516,11 +515,11 @@ func (qs *Qstat) PbsQueueState() ([]utils.[]BatchStatus, error) {
 		qs.QueueState = append(qs.QueueState, tmpServerQueueState)
 	}
 
-	return batch, nil
+	return nil
 }
 
 //查询服务信息
-func (qs *Qstat) PbsServerState() ([]utils.[]BatchStatus, error){
+func (qs *Qstat) PbsServerState() error {
 	a := Pbs_attrib2attribl(qs.Attribs)
 	defer Pbs_freeattribl(a)
 
@@ -690,11 +689,11 @@ func (qs *Qstat) PbsServerState() ([]utils.[]BatchStatus, error){
 		qs.ServerState = append(qs.ServerState, tmp_server_state_info)
 	}
 
-	return batch, nil
+	return nil
 }
 
 //返回所有作业信息，如果Extend设为x，则返回所有历史信息。
-func (qs *Qstat) PbsJobsState() ([]utils.[]BatchStatus, error) {
+func (qs *Qstat) PbsJobsState() error {
 	a := Pbs_attrib2attribl(qs.Attribs)
 	defer Pbs_freeattribl(a)
 
@@ -905,7 +904,7 @@ func (qs *Qstat) PbsJobsState() ([]utils.[]BatchStatus, error) {
 		qs.JobsState = append(qs.JobsState, tmpJobsStateInfo)
 	}
 
-	return batch, nil
+	return nil
 }
 
 //获取信息
