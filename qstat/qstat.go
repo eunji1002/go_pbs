@@ -434,7 +434,7 @@ func (qs *Qstat) PbsNodeState() ([]utils.[]BatchStatus, error) {
 }
 
 //查询指定队列信息
-func (qs *Qstat) PbsQueueState() error {
+func (qs *Qstat) PbsQueueState() ([]utils.[]BatchStatus, error) {
 	i := C.CString(qs.ID)
 	defer C.free(unsafe.Pointer(i))
 
@@ -519,7 +519,7 @@ func (qs *Qstat) PbsQueueState() error {
 }
 
 //查询服务信息
-func (qs *Qstat) PbsServerState()([]utils.[]BatchStatus, error){
+func (qs *Qstat) PbsServerState() ([]utils.[]BatchStatus, error){
 	a := Pbs_attrib2attribl(qs.Attribs)
 	defer Pbs_freeattribl(a)
 
@@ -693,7 +693,7 @@ func (qs *Qstat) PbsServerState()([]utils.[]BatchStatus, error){
 }
 
 //返回所有作业信息，如果Extend设为x，则返回所有历史信息。
-func (qs *Qstat) PbsJobsState() error {
+func (qs *Qstat) PbsJobsState() ([]utils.[]BatchStatus, error) {
 	a := Pbs_attrib2attribl(qs.Attribs)
 	defer Pbs_freeattribl(a)
 
