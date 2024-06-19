@@ -519,7 +519,7 @@ func (qs *Qstat) PbsQueueState() error {
 }
 
 //查询服务信息
-func (qs *Qstat) PbsServerState() error {
+func (qs *Qstat) PbsServerState()([]utils.[]BatchStatus, error){
 	a := Pbs_attrib2attribl(qs.Attribs)
 	defer Pbs_freeattribl(a)
 
