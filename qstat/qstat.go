@@ -429,6 +429,7 @@ func (qs *Qstat) PbsNodeState() error {
 			}
 		}
 		qs.NodeState = append(qs.NodeState, tmpServerNodeState)
+		fmt.Printf("Node State: %+v\n", tmpServerNodeState)
 	}
 
 	return nil
