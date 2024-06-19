@@ -319,11 +319,11 @@ func (qs *Qstat) PbsNodeState() error {
 	}
 	defer C.pbs_statfree(batch_status)
 
-	batch := get_pbs_batch_status(batch_status)
+	//batch := get_pbs_batch_status(batch_status)
 
-	for _, bs := range batch {
+	
 		var tmpServerNodeState QstatNodeInfo
-		tmpServerNodeState.NodeName = bs.Name
+		tmpServerNodeState.NodeName = "node03"
 		for _, attr := range bs.Attributes {
 			switch attr.Name {
 			case "Mom":
@@ -427,7 +427,7 @@ func (qs *Qstat) PbsNodeState() error {
 			}
 		}
 		qs.NodeState = append(qs.NodeState, tmpServerNodeState)
-	}
+	
 
 	return nil
 }
