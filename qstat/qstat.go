@@ -15,7 +15,7 @@ import (
 	"unsafe"
 
 	"github.com/juju/errors"
-	"github.com/cherrysx/go_pbspro/utils"
+	"github.com/eunji1002/go_pbs/utils"
 )
 
 type (
@@ -301,6 +301,7 @@ func (qs *Qstat) Pbs_statjob() ([]utils.BatchStatus, error) {
 	return batch, nil
 }
 
+//查询指定节点状态
 func (qs *Qstat) PbsNodeState() error {
 	i := C.CString(qs.ID)
 	defer C.free(unsafe.Pointer(i))
@@ -504,7 +505,7 @@ func (qs *Qstat) PbsQueueState() error {
 				if strings.Compare(attr.Value, "True") == 0 {
 					tmpServerQueueState.Started = 1
 				} else {
-					tmpServerQueueState.Started = 0fno
+					tmpServerQueueState.Started = 0
 				}
 			default:
 				fmt.Println("other queue state", attr.Name)
