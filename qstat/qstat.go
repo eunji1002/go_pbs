@@ -303,7 +303,7 @@ func (qs *Qstat) Pbs_statjob() ([]utils.BatchStatus, error) {
 }
 
 //查询指定节点状态
-func (qs *Qstat) PbsNodeState() error {
+func (qs *Qstat) PbsNodeState() ([]utils.[]BatchStatus, error) {
 	i := C.CString(qs.ID)
 	defer C.free(unsafe.Pointer(i))
 
