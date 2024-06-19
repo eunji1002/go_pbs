@@ -15,7 +15,7 @@ import (
 	"unsafe"
 
 	"github.com/juju/errors"
-	"github.com/eunji1002/go_pbs/utils"
+	"github.com/cherrysx/go_pbspro/utils"
 )
 
 type (
