@@ -329,7 +329,6 @@ func (qs *Qstat) PbsNodeState() ([]utils.[]BatchStatus, error) {
 			switch attr.Name {
 			case "Mom":
 				tmpServerNodeState.Mom = attr.Value
-				fmt.Println("mom is ", attr.Value)
 			case "ntype":
 				tmpServerNodeState.Ntype = attr.Value
 			case "state":
@@ -429,9 +428,10 @@ func (qs *Qstat) PbsNodeState() ([]utils.[]BatchStatus, error) {
 			}
 		}
 		qs.NodeState = append(qs.NodeState, tmpServerNodeState)
+		fmt.Printf("Node State: %+v\n", tmpServerNodeState)
 	}
 
-	return nil
+	return batch, nil
 }
 
 //查询指定队列信息
@@ -516,7 +516,7 @@ func (qs *Qstat) PbsQueueState() ([]utils.[]BatchStatus, error) {
 		qs.QueueState = append(qs.QueueState, tmpServerQueueState)
 	}
 
-	return nil
+	return batch, nil
 }
 
 //查询服务信息
@@ -690,7 +690,7 @@ func (qs *Qstat) PbsServerState() ([]utils.[]BatchStatus, error){
 		qs.ServerState = append(qs.ServerState, tmp_server_state_info)
 	}
 
-	return nil
+	return batch, nil
 }
 
 //返回所有作业信息，如果Extend设为x，则返回所有历史信息。
@@ -905,7 +905,7 @@ func (qs *Qstat) PbsJobsState() ([]utils.[]BatchStatus, error) {
 		qs.JobsState = append(qs.JobsState, tmpJobsStateInfo)
 	}
 
-	return nil
+	return batch, nil
 }
 
 //获取信息
