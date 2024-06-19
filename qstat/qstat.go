@@ -329,6 +329,7 @@ func (qs *Qstat) PbsNodeState() ([]utils.[]BatchStatus, error) {
 			switch attr.Name {
 			case "Mom":
 				tmpServerNodeState.Mom = attr.Value
+				fmt.Println("mom is ", attr.Value)
 			case "ntype":
 				tmpServerNodeState.Ntype = attr.Value
 			case "state":
