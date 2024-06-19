@@ -15,7 +15,7 @@ import (
 	"unsafe"
 
 	"github.com/juju/errors"
-	"github.com/cherrysx/go_pbspro/utils"
+	"github.com/eunji1002/go_pbs/utils"
 )
 
 type (
@@ -301,7 +301,6 @@ func (qs *Qstat) Pbs_statjob() ([]utils.BatchStatus, error) {
 	return batch, nil
 }
 
-//查询指定节点状态
 func (qs *Qstat) PbsNodeState() error {
 	i := C.CString(qs.ID)
 	defer C.free(unsafe.Pointer(i))
@@ -319,13 +318,13 @@ func (qs *Qstat) PbsNodeState() error {
 	}
 	defer C.pbs_statfree(batch_status)
 
-	//batch := get_pbs_batch_status(batch_status)
+	batch := get_pbs_batch_status(batch_status)
 
-	
+	for _, bs := range batch {
 		var tmpServerNodeState QstatNodeInfo
-		tmpServerNodeState.NodeName = "node03"
+		tmpServerNodeState.NodeName = bs.Name
 		for _, attr := range bs.Attributes {
-			switch "node03" {
+			switch attr.Name {
 			case "Mom":
 				tmpServerNodeState.Mom = attr.Value
 			case "ntype":
@@ -426,8 +425,8 @@ func (qs *Qstat) PbsNodeState() error {
 				fmt.Println("other node state", attr.Name)
 			}
 		}
-		//qs.NodeState = append(qs.NodeState, tmpServerNodeState)
-	
+		qs.NodeState = append(qs.NodeState, tmpServerNodeState)
+	}
 
 	return nil
 }
