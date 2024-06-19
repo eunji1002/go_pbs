@@ -13,7 +13,7 @@ import (
 	"errors"
 	"unsafe"
 
-	"github.com/cherrysx/go_pbspro/utils"
+	"github.com/eunji1002/go_pbs/utils"
 )
 
 func Pbs_alterjob(handle int, id string, attribs []Attrib, extend string) error {
