@@ -303,7 +303,7 @@ func (qs *Qstat) Pbs_statjob() ([]utils.BatchStatus, error) {
 }
 
 //查询指定节点状态
-func (qs *Qstat) PbsNodeState() error {
+func (qs *Qstat) PbsNodeState() ([]utils.BatchStatus, error) {
 	i := C.CString(qs.ID)
 	defer C.free(unsafe.Pointer(i))
 
@@ -430,11 +430,11 @@ func (qs *Qstat) PbsNodeState() error {
 		qs.NodeState = append(qs.NodeState, tmpServerNodeState)
 	}
 
-	return nil
+	return batch, nil
 }
 
 //查询指定队列信息
-func (qs *Qstat) PbsQueueState() error {
+func (qs *Qstat) PbsQueueState() ([]utils.BatchStatus, error) {
 	i := C.CString(qs.ID)
 	defer C.free(unsafe.Pointer(i))
 
@@ -515,11 +515,11 @@ func (qs *Qstat) PbsQueueState() error {
 		qs.QueueState = append(qs.QueueState, tmpServerQueueState)
 	}
 
-	return nil
+	return batch, nil
 }
 
 //查询服务信息
-func (qs *Qstat) PbsServerState() error {
+func (qs *Qstat) PbsServerState() ([]utils.BatchStatus, error) {
 	a := Pbs_attrib2attribl(qs.Attribs)
 	defer Pbs_freeattribl(a)
 
@@ -689,11 +689,11 @@ func (qs *Qstat) PbsServerState() error {
 		qs.ServerState = append(qs.ServerState, tmp_server_state_info)
 	}
 
-	return nil
+	return batch, nil
 }
 
 //返回所有作业信息，如果Extend设为x，则返回所有历史信息。
-func (qs *Qstat) PbsJobsState() error {
+func (qs *Qstat) PbsJobsState() ([]utils.BatchStatus, error) {
 	a := Pbs_attrib2attribl(qs.Attribs)
 	defer Pbs_freeattribl(a)
 
@@ -904,7 +904,7 @@ func (qs *Qstat) PbsJobsState() error {
 		qs.JobsState = append(qs.JobsState, tmpJobsStateInfo)
 	}
 
-	return nil
+	return batch, nil
 }
 
 //获取信息
