@@ -329,11 +329,11 @@ func (qs *Qstat) PbsNodeState() error {
 			switch attr.Name {
 			case "Mom":
 				tmpServerNodeState.Mom = attr.Value
-				fmt.Println("mom is ", attr.Value)
 			case "ntype":
 				tmpServerNodeState.Ntype = attr.Value
 			case "state":
 				tmpServerNodeState.State = attr.Value
+				fmt.Println("state is ", attr.Value)
 			case "pcpus":
 				tmpServerNodeState.Pcpus, _ = strconv.ParseInt(attr.Value, 10, 64)
 			case "jobs":
