@@ -333,7 +333,6 @@ func (qs *Qstat) PbsNodeState() error {
 				tmpServerNodeState.Ntype = attr.Value
 			case "state":
 				tmpServerNodeState.State = attr.Value
-				fmt.Println("state is ", attr.Value)
 			case "pcpus":
 				tmpServerNodeState.Pcpus, _ = strconv.ParseInt(attr.Value, 10, 64)
 			case "jobs":
@@ -429,7 +428,6 @@ func (qs *Qstat) PbsNodeState() error {
 			}
 		}
 		qs.NodeState = append(qs.NodeState, tmpServerNodeState)
-		fmt.Printf("Node State: %+v\n", tmpServerNodeState)
 	}
 
 	return nil
@@ -515,6 +513,7 @@ func (qs *Qstat) PbsQueueState() error {
 			}
 		}
 		qs.QueueState = append(qs.QueueState, tmpServerQueueState)
+		fmt.Printf("Queue State: %+v\n", tmpServerQueueState)
 	}
 
 	return nil
