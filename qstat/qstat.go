@@ -857,37 +857,43 @@ func (qs *Qstat) PbsJobsState() error {
 			case "substate":
 				tmpJobsStateInfo.SubState, _ = strconv.ParseInt(attr.Value, 10, 64)
 			case "Variable_List":
-				tmpJobsStateInfo.VariableList = attr.Value
-				varElems := strings.Split(tmpJobsStateInfo.VariableList, ",")
-				for _, elems := range varElems {
-					elemsName := strings.Split(elems, "=")[0]
-					elemsValue := strings.Split(elems, "=")[1]
-					switch elemsName {
-					case "PBS_O_HOME":
-						tmpJobsStateInfo.VariableListHome = elemsValue
-					case "PBS_O_LANG":
-						tmpJobsStateInfo.VariableListLang = elemsValue
-					case "PBS_O_LOGNAME":
-						tmpJobsStateInfo.VariableListLogname = elemsValue
-					case "PBS_O_PATH":
-						tmpJobsStateInfo.VariableListPath = elemsValue
-					case "PBS_O_MAIL":
-						tmpJobsStateInfo.VariableListMail = elemsValue
-					case "PBS_O_SHELL":
-						sliceCap := int(cap(strings.Split(elemsValue, "/")))
-						tmpJobsStateInfo.VariableListShell = strings.Split(elemsValue, "/")[sliceCap-1]
-					case "PBS_O_WORKDIR":
-						tmpJobsStateInfo.VariableListWorkdir = elemsValue
-					case "PBS_O_SYSTEM":
-						tmpJobsStateInfo.VariableListSystem = elemsValue
-					case "PBS_O_QUEUE":
-						tmpJobsStateInfo.VariableListQueue = elemsValue
-					case "PBS_O_HOST":
-						tmpJobsStateInfo.VariableListHost = elemsValue
-					default:
-						fmt.Println("other Variables List ", elemsName, "=", elemsValue)
-					}
-				}
+			    tmpJobsStateInfo.VariableList = attr.Value
+			    varElems := strings.Split(tmpJobsStateInfo.VariableList, ",")
+			    for _, elems := range varElems {
+			        elemsParts := strings.Split(elems, "=")
+			        if len(elemsParts) > 1 {
+			            elemsName := elemsParts[0]
+			            elemsValue := elemsParts[1]
+			            switch elemsName {
+			            case "PBS_O_HOME":
+			                tmpJobsStateInfo.VariableListHome = elemsValue
+			            case "PBS_O_LANG":
+			                tmpJobsStateInfo.VariableListLang = elemsValue
+			            case "PBS_O_LOGNAME":
+			                tmpJobsStateInfo.VariableListLogname = elemsValue
+			            case "PBS_O_PATH":
+			                tmpJobsStateInfo.VariableListPath = elemsValue
+			            case "PBS_O_MAIL":
+			                tmpJobsStateInfo.VariableListMail = elemsValue
+			            case "PBS_O_SHELL":
+			                sliceCap := int(cap(strings.Split(elemsValue, "/")))
+			                tmpJobsStateInfo.VariableListShell = strings.Split(elemsValue, "/")[sliceCap-1]
+			            case "PBS_O_WORKDIR":
+			                tmpJobsStateInfo.VariableListWorkdir = elemsValue
+			            case "PBS_O_SYSTEM":
+			                tmpJobsStateInfo.VariableListSystem = elemsValue
+			            case "PBS_O_QUEUE":
+			                tmpJobsStateInfo.VariableListQueue = elemsValue
+			            case "PBS_O_HOST":
+			                tmpJobsStateInfo.VariableListHost = elemsValue
+			            default:
+			                fmt.Println("other Variables List ", elemsName, "=", elemsValue)
+			            }
+			        } else {
+			            fmt.Println("Invalid variable format: ", elems)
+			        }
+			    }
+
 			case "comment":
 				tmpJobsStateInfo.Comment = attr.Value
 			case "etime":
